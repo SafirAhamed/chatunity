@@ -8,10 +8,12 @@
   justify-content: center;
   gap: 20px;
   align-items: center;
-  background: url("../assets/images/bgimg.png") no-repeat center center fixed;
+  background: url('../assets/images/bgimg.png') no-repeat center center;
   background-size: cover;
-  font-family: "Barlow";
+  font-family: 'Barlow';
+  /* position: relative; */
 }
+
 .screen_main:after {
   content: "";
   position: absolute;
@@ -21,38 +23,77 @@
   bottom: 0;
   background: #ffffff14;
 }
+
+.content1, .content2, .signature {
+  background: rgba(0, 0, 0, 0.8);
+  height: fit-content;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  font-weight: 600;
+}
+.content1-sub{
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: 11px;
+}
+
 .content1 {
   font-size: 80px;
-  font-weight: 600;
-  background: rgba(0, 0, 0, 0.8);
-  height: fit-content;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  color: white;
   letter-spacing: 12px;
 }
+
 .content2 {
   font-size: 64px;
-  font-weight: 600;
-  background: rgba(0, 0, 0, 0.8);
-  height: fit-content;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  color: white;
   letter-spacing: 12px;
 }
+
 .signature {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  background: rgba(0, 0, 0, 0.8);
-  height: fit-content;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  color: white;
-  font-weight: 600;
-  letter-spacing:3px;
+  font-size: 20px;
+  letter-spacing: 3px;
+}
+
+@media (max-width: 768px) {
+  .content1 {
+      font-size: 40px;
+      letter-spacing: 12px;
+  }
+
+  .content2 {
+      font-size: 32px;
+      letter-spacing: 6px;
+  }
+
+  .signature {
+      font-size: 16px;
+      letter-spacing: 2px;
+      padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content1 {
+      font-size: 24px;
+      letter-spacing: 13px;
+  }
+  .content1-sub{
+    margin-top:10px;
+    font-size:12px;
+    letter-spacing: 3px
+  }
+
+  .content2 {
+      font-size: 20px;
+      letter-spacing: 3px;
+  }
+
+  .signature {
+      font-size: 12px;
+      letter-spacing: 1px;
+      padding: 5px;
+  }
 }

@@ -7,7 +7,7 @@ function UnderDev() {
     <div className='screen_main'>
       <div className='content1'>
         CHAT UNITY
-        <div style={{marginTop:"10px", fontSize:"12px", letterSpacing: "11px"}}>
+        <div className='content1-sub'>
           LET'S CONNECT WITH THIS WORLD
         </div>
       </div>
