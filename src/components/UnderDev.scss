@@ -1,0 +1,118 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+// Variables
+$bg-color: rgba(0, 0, 0, 0.8);
+$primary-color: white;
+$font-weight: 600;
+$border-radius: 10px;
+$padding: 20px;
+$font-family: 'Barlow', sans-serif;
+
+$breakpoint-md: 768px;
+$breakpoint-sm: 480px;
+
+.under-dev {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+  font-family: $font-family;
+
+  &__button-container {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+  }
+
+  &__content {
+    background: $bg-color;
+    height: fit-content;
+    padding: $padding;
+    border-radius: $border-radius;
+    text-align: center;
+    color: $primary-color;
+    font-weight: $font-weight;
+
+    &--main {
+      font-size: 80px;
+      letter-spacing: 12px;
+
+      &-sub {
+        margin-top: 10px;
+        font-size: 12px;
+        letter-spacing: 11px;
+      }
+    }
+
+    &--secondary {
+      font-size: 64px;
+      letter-spacing: 12px;
+
+      &-sub {
+        margin-top: 10px;
+        font-size: 12px;
+        letter-spacing: 0;
+        font-weight: 400;
+      }
+    }
+
+    &--signature {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 20px;
+      letter-spacing: 3px;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .under-dev {
+    &__content {
+      &--main {
+        font-size: 40px;
+      }
+
+      &--secondary {
+        font-size: 32px;
+        letter-spacing: 6px;
+      }
+
+      &--signature {
+        font-size: 16px;
+        letter-spacing: 2px;
+        padding: 10px;
+      }
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .under-dev {
+    &__content {
+      &--main {
+        font-size: 24px;
+        letter-spacing: 13px;
+
+        &-sub {
+          margin-top: 10px;
+          font-size: 12px;
+          letter-spacing: 3px;
+        }
+      }
+
+      &--secondary {
+        font-size: 20px;
+        letter-spacing: 3px;
+      }
+
+      &--signature {
+        font-size: 12px;
+        letter-spacing: 1px;
+        padding: 5px;
+      }
+    }
+  }
+}

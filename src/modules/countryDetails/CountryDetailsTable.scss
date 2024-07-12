@@ -1,0 +1,34 @@
+// Define styles for the .country_table class
+.country_table {
+    width: 100%;
+    border-collapse: collapse;
+
+    // Styles for the <thead> element
+    thead {
+        background-color: #f0f0f0;
+        font-weight: bold;
+
+        // Styles for <tr> elements within <thead>
+        tr {
+            // Styles for <th> elements within <tr>
+            th {
+                padding: 10px;
+                text-align: left;
+                border: 1px solid #ccc;
+                text-align: center;
+            }
+        }
+    }
+
+    // Styles for the <tbody> element
+    tbody {
+        // Styles for <tr> elements within <tbody>
+        tr {
+            // Styles for <td> elements within <tr>
+            td {
+                padding: 10px;
+                border: 1px solid #ccc;
+            }
+        }
+    }
+}
