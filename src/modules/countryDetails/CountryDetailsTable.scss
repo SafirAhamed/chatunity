@@ -13,9 +13,15 @@
             // Styles for <th> elements within <tr>
             th {
                 padding: 10px;
-                text-align: left;
-                border: 1px solid #ccc;
+                border-bottom: 1px solid #ccc;
+                border-left: 1px solid #ccc;
+                border-right: 1px solid #ccc;
                 text-align: center;
+                position: sticky;
+                top: 0;
+                background-color: #f0f0f0; // Ensure background color matches the header background
+                z-index: 2; // Ensure header stays above table content
+                box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4); // Add shadow to give visual separation
             }
         }
     }

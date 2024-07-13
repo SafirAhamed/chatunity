@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import './CountryDetailsTable.scss'
+import React, { useEffect, useState } from 'react';
+import './CountryDetailsTable.scss';
+import PrimaryInput from '../../components/common/inputFields/PrimaryInput';
+import CommonAutocomplete from '../../components/common/inputFields/CommonAutocomplete';
+import { regionMappings, regionTagsOptions } from './constantsAndConfigs';
 
 export const CountryDetailsTable = () => {
     const [countries, setCountries] = useState([]);
     const [filteredCountries, setFilteredCountries] = useState([]);
+    const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
+    const [options, setOptions] = useState({
+        region: [],
+        regionTags: []
+    });
     const [filters, setFilters] = useState({
         name: '',
         alpha2Code: '',
@@ -36,132 +44,88 @@ export const CountryDetailsTable = () => {
         }));
     };
 
+    const handleFilterDropdownChange = (value, name) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [name]: value || ""
+        }));
+    };
+
+    // Function to handle sorting
+    const handleSort = (key) => {
+        if (key === 'flags.svg') {
+            return; // Disable sorting for 'Flag' column
+        }
+
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    // Function to get sorted and filtered countries
+    const getSortedFilteredCountries = () => {
+        let sortedFilteredCountries = [...filteredCountries];
+
+        if (sortConfig.key) {
+            sortedFilteredCountries.sort((a, b) => {
+                const varA = getValueForSorting(a, sortConfig.key);
+                const varB = getValueForSorting(b, sortConfig.key);
+
+                if (varA < varB) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (varA > varB) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+
+        return sortedFilteredCountries;
+    };
+
+    // Helper function to get the value for sorting from country object
+    const getValueForSorting = (country, key) => {
+        switch (key) {
+            case 'name.common':
+                return country.name.common.toLowerCase();
+            case 'cca2':
+                return country.cca2.toLowerCase();
+            case 'cca3':
+                return country.cca3.toLowerCase();
+            case 'idd.root':
+                return country.idd && country.idd.root ? country.idd.root.toLowerCase() : '';
+            case 'currencies':
+                return country.currencies ? Object.keys(country.currencies).map(code => country.currencies[code].name.toLowerCase()).join(', ') : '';
+            case 'region':
+                return country.region.toLowerCase();
+            case 'regionTags':
+                return getRegionTags(country.name.common).toLowerCase();
+            default:
+                return '';
+        }
+    };
+
     // Function to filter countries based on current filters
     useEffect(() => {
         const filtered = countries?.filter(country =>
-            country.name.common?.toLowerCase()?.includes(filters.name?.toLowerCase()) &&
-            country.cca2?.toLowerCase()?.includes(filters.alpha2Code?.toLowerCase()) &&
-            country.cca3?.toLowerCase()?.includes(filters.alpha3Code?.toLowerCase()) &&
-            (country.idd && country.idd.root?.toLowerCase()?.includes(filters.dialCode?.toLowerCase())) &&
+            country.name.common?.toLowerCase().includes(filters.name?.toLowerCase()) &&
+            country.cca2?.toLowerCase().includes(filters.alpha2Code?.toLowerCase()) &&
+            country.cca3?.toLowerCase().includes(filters.alpha3Code?.toLowerCase()) &&
+            (country.idd && country.idd.root?.toLowerCase().includes(filters.dialCode?.toLowerCase())) &&
             (country.currencies ? Object.keys(country.currencies).some(code =>
-                country.currencies[code].name?.toLowerCase()?.includes(filters.currency?.toLowerCase())
+                country.currencies[code].name.toLowerCase().includes(filters.currency?.toLowerCase())
             ) : true) &&
-            country.region?.toLowerCase()?.includes(filters.region?.toLowerCase()) &&
-            getRegionTags(country.name.common)?.toLowerCase()?.includes(filters.regionTags?.toLowerCase())
+            country.region?.toLowerCase().includes(filters.region?.toLowerCase()) &&
+            getRegionTags(country.name.common)?.toLowerCase().includes(filters.regionTags?.toLowerCase())
         );
         setFilteredCountries(filtered);
     }, [countries, filters]);
 
-    const regionMappings = {
-        // Latin America (LATAM)
-        'Mexico': 'LATAM',
-        'Brazil': 'LATAM',
-        'Argentina': 'LATAM',
-        'Chile': 'LATAM',
-        'Colombia': 'LATAM',
-        'Peru': 'LATAM',
-        'Ecuador': 'LATAM',
-        'Bolivia': 'LATAM',
-        'Paraguay': 'LATAM',
-        'Uruguay': 'LATAM',
-        'Venezuela': 'LATAM',
-        'Costa Rica': 'LATAM',
-        'Cuba': 'LATAM',
-        'Dominican Republic': 'LATAM',
-        'Guatemala': 'LATAM',
-        'Honduras': 'LATAM',
-        'Nicaragua': 'LATAM',
-        'Panama': 'LATAM',
-        // Single Euro Payments Area (SEPA)
-        'Germany': 'SEPA',
-        'France': 'SEPA',
-        'Spain': 'SEPA',
-        'Italy': 'SEPA',
-        'Netherlands': 'SEPA',
-        'Belgium': 'SEPA',
-        'Austria': 'SEPA',
-        'Portugal': 'SEPA',
-        'Ireland': 'SEPA',
-        'Luxembourg': 'SEPA',
-        'Greece': 'SEPA',
-        'Finland': 'SEPA',
-        'Sweden': 'SEPA',
-        'Denmark': 'SEPA',
-        'Poland': 'SEPA',
-        'Hungary': 'SEPA',
-        'Czech Republic': 'SEPA',
-        'Slovakia': 'SEPA',
-        // ASEAN (Association of Southeast Asian Nations)
-        'Thailand': 'ASEAN',
-        'Indonesia': 'ASEAN',
-        'Malaysia': 'ASEAN',
-        'Vietnam': 'ASEAN',
-        'Philippines': 'ASEAN',
-        'Singapore': 'ASEAN',
-        'Myanmar': 'ASEAN',
-        'Cambodia': 'ASEAN',
-        'Laos': 'ASEAN',
-        'Brunei': 'ASEAN',
-        // EAC (East African Community)
-        'Kenya': 'EAC',
-        'Tanzania': 'EAC',
-        'Uganda': 'EAC',
-        'Rwanda': 'EAC',
-        'Burundi': 'EAC',
-        'South Sudan': 'EAC',
-        // GCC (Gulf Cooperation Council)
-        'Saudi Arabia': 'GCC',
-        'United Arab Emirates': 'GCC',
-        'Qatar': 'GCC',
-        'Kuwait': 'GCC',
-        'Oman': 'GCC',
-        'Bahrain': 'GCC',
-        // CARICOM (Caribbean Community)
-        'Jamaica': 'CARICOM',
-        'Trinidad and Tobago': 'CARICOM',
-        'Barbados': 'CARICOM',
-        'Bahamas': 'CARICOM',
-        'Guyana': 'CARICOM',
-        'Suriname': 'CARICOM',
-        'Grenada': 'CARICOM',
-        'Saint Lucia': 'CARICOM',
-        'Saint Vincent and the Grenadines': 'CARICOM',
-        'Antigua and Barbuda': 'CARICOM',
-        'Dominica': 'CARICOM',
-        'Belize': 'CARICOM',
-        'Saint Kitts and Nevis': 'CARICOM',
-        // CEFTA (Central European Free Trade Agreement)
-        'Albania': 'CEFTA',
-        'Bosnia and Herzegovina': 'CEFTA',
-        'North Macedonia': 'CEFTA',
-        'Montenegro': 'CEFTA',
-        'Serbia': 'CEFTA',
-        'Kosovo': 'CEFTA',
-        // Pacific Islands Forum
-        'Australia': 'PIF',
-        'New Zealand': 'PIF',
-        'Fiji': 'PIF',
-        'Papua New Guinea': 'PIF',
-        'Samoa': 'PIF',
-        'Solomon Islands': 'PIF',
-        'Vanuatu': 'PIF',
-        'Tonga': 'PIF',
-        'Kiribati': 'PIF',
-        'Tuvalu': 'PIF',
-        'Nauru': 'PIF',
-        'Marshall Islands': 'PIF',
-        'Palau': 'PIF'
-        // Add additional cases for other regions as needed
-    };
-
-    const regionTagsOptions = ['LATAM', 'SEPA', 'ASEAN', 'EAC', 'GCC', 'CARICOM', 'CEFTA', 'PIF']
-
     // Function to map countries to region tags
     const getRegionTags = (countryName) => {
-        // Define mappings for region tags
-
-
-        // Return the region tag for the given country name, or empty string if not found
         return regionMappings[countryName] || '';
     };
 
@@ -180,101 +144,106 @@ export const CountryDetailsTable = () => {
         return Array.from(uniqueValues);
     };
 
-    // Function to get unique region tags from regionMappings
-    const getUniqueRegionTags = () => {
-        const uniqueRegionTags = new Set(Object.values(regionMappings));
-        return Array.from(uniqueRegionTags);
-    };
+    useEffect(() => {
+        if (countries.length > 0)
+            setOptions({
+                region: getUniqueValues('region'),
+                regionTags: regionTagsOptions
+            });
+    }, [countries]);
+
+    const tableHeaders = [
+        { label: 'Sl.no', key: 'flags.svg', width: '20px', sortable: false },
+        { label: 'Flag', key: 'flags.svg', width: '52px', sortable: false },
+        { label: 'Country Name', key: 'name.common', width: '20%', sortable: true },
+        { label: '2-Letter Code', key: 'cca2', width: '10%', sortable: true },
+        { label: 'Country Code', key: 'cca3', width: '10%', sortable: true },
+        { label: 'Dial Code', key: 'idd.root', width: '10%', sortable: true },
+        { label: 'Currency', key: 'currencies', width: '20%', sortable: true },
+        { label: 'Region', key: 'region', width: '10%', sortable: true },
+        { label: 'Region Tags', key: 'regionTags', width: '10%', sortable: true }
+    ];
+
     return (
         <table className='country_table'>
             <thead>
                 <tr>
-                    <th style={{ minWidth: '52px' }}>Flag</th>
-                    <th style={{ width: '20%' }}>Country Name</th>
-                    <th style={{ width: '10%' }}>2-Letter Code</th>
-                    <th style={{ width: '10%' }}>Country Code</th>
-                    <th style={{ width: '15%' }}>Dial Code</th>
-                    <th style={{ width: '15%' }}>Currency</th>
-                    <th style={{ width: '10%' }}>Region</th>
-                    <th style={{ width: '10%' }}>Region Tags</th>
+                    {tableHeaders.map(header => (
+                        <th key={header.label} style={{ width: header.width }} onClick={() => handleSort(header.key)}>
+                            {header.label} {header.sortable && sortConfig.key === header.key && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                        </th>
+                    ))}
                 </tr>
                 <tr>
-                    <th></th>
-                    <th>
-                        <input
-                            type="text"
+                    <th colSpan={2}>{`Showing ${getSortedFilteredCountries()?.length} / ${countries?.length} countries`}</th>
+                    <th >
+                        <PrimaryInput
                             name="name"
-                            placeholder="Search"
+                            label="Search"
+                            placeholder={'Search country'}
                             value={filters.name}
                             onChange={handleFilterChange}
                         />
                     </th>
                     <th>
-                        <input
-                            type="text"
+                        <PrimaryInput
                             name="alpha2Code"
-                            placeholder="Search"
+                            label="Search"
                             value={filters.alpha2Code}
                             onChange={handleFilterChange}
                         />
                     </th>
                     <th>
-                        <input
-                            type="text"
+                        <PrimaryInput
                             name="alpha3Code"
-                            placeholder="Search"
+                            label="Search"
                             value={filters.alpha3Code}
                             onChange={handleFilterChange}
                         />
                     </th>
                     <th>
-                        <input
-                            type="text"
+                        <PrimaryInput
                             name="dialCode"
-                            placeholder="Search"
+                            label="Search"
                             value={filters.dialCode}
                             onChange={handleFilterChange}
                         />
                     </th>
                     <th>
-                        <input
-                            type="text"
+                        <PrimaryInput
                             name="currency"
-                            placeholder="Search"
+                            label="Search"
                             value={filters.currency}
                             onChange={handleFilterChange}
                         />
                     </th>
                     <th>
-                        <select
+                        <CommonAutocomplete
+                            label="Search"
                             name="region"
+                            options={options?.region}
                             value={filters.region}
-                            onChange={handleFilterChange}
-                        >
-                            <option value="">Select</option>
-                            {getUniqueValues('region').map(region => (
-                                <option key={region} value={region}>{region}</option>
-                            ))}
-                        </select>
+                            onChange={(e, val) => handleFilterDropdownChange(val, 'region')}
+                        />
                     </th>
                     <th>
-                        <select
+                        <CommonAutocomplete
+                            label="Search"
                             name="regionTags"
+                            options={options?.regionTags}
                             value={filters.regionTags}
-                            onChange={handleFilterChange}
-                        >
-                            <option value="">Select</option>
-                            {regionTagsOptions.map(tag => (
-                                <option key={tag} value={tag}>{tag}</option>
-                            ))}
-                        </select>
+                            onChange={(e, val) => handleFilterDropdownChange(val, 'regionTags')}
+                        />
                     </th>
                 </tr>
             </thead>
             <tbody>
-                {filteredCountries.map(country => (
+                {getSortedFilteredCountries().map((country, index) => (
                     <tr key={country.cca3}>
-                        <td style={{ display: 'flex', justifyContent: 'center' }}><img src={country.flags && country.flags.svg} alt={`Flag of ${country.name.common}`} width="50" /></td>
+                        <td style={{textAlign:'center'}}>{index + 1}</td> {/* Adding index + 1 for 1-based numbering */}
+                        <td style={{ display: 'flex', justifyContent: 'center' }}>
+                            {country.flags && country.flags.svg && <img src={country.flags.svg} alt={`Flag of ${country.name.common}`} width="50" />}
+                        </td>
                         <td>{country.name.common}</td>
                         <td>{country.cca2}</td>
                         <td>{country.cca3}</td>
@@ -286,5 +255,5 @@ export const CountryDetailsTable = () => {
                 ))}
             </tbody>
         </table>
-    )
-}
+    );
+};
