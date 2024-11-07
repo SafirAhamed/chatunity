@@ -24,7 +24,7 @@ function UnderDev() {
         </div>
       </div>
       <div className='under-dev__content under-dev__content--signature'>
-        -Safir Ahamed
+        -Safir Ahamed.
       </div>
     </div>
   );
