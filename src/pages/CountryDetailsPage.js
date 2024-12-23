@@ -9,10 +9,9 @@ const CountryDetailsPage = () => {
             <div style={pageTitleStyle}>Country Details</div>
             <div className="country-table-layout-main">
                 <div className="country-table-layout-table-main">
-                <div className="scrollable-content">
-                    <CountryDetailsTable />
-                </div>
-
+                    <div className="scrollable-content">
+                        <CountryDetailsTable />
+                    </div>
                 </div>
             </div>
         </div>

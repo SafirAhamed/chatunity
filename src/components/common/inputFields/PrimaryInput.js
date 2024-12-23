@@ -58,7 +58,7 @@ const useStyles = makeStyles({
   },
 });
 
-const PrimaryInput = ({ type, label, value, name, placeholder, onChange, size }) => {
+const PrimaryInput = ({ type, label, value, name, placeholder, onChange, size, ...props }) => {
   const classes = useStyles();
 
   return (
@@ -74,6 +74,7 @@ const PrimaryInput = ({ type, label, value, name, placeholder, onChange, size })
         onChange={onChange}
         size={size || "small"}
         fullWidth
+        {...props}
       />
     </ThemeProvider>
   );

@@ -1,20 +1,26 @@
-import { Button, useTheme } from '@mui/material';
-import React from 'react';
+import React from "react";
+import { Button, useTheme, styled } from "@mui/material";
 
-const PrimaryButton = ({ value, variant,onClick }) => {
-    const theme = useTheme();
+const StyledButton = styled(Button)(({ theme, bgColor, color }) => ({
+  backgroundColor: bgColor || theme.palette.common.white,
+  color: color || theme.palette.grey[900],
+  fontWeight: 600,
+  height: "40px",
+  
+}));
 
-    const buttonStyle = {
-        backgroundColor: theme.palette.common.white,
-        color: theme.palette.grey[900],
-        fontWeight:'600'
-    };
-
-    return (
-        <Button variant={variant || "contained"} style={buttonStyle} onClick={onClick}>
-            {value}
-        </Button>
-    );
+const PrimaryButton = ({ value, bgColor, color, variant, onClick, ...props }) => {
+  return (
+    <StyledButton
+      variant={variant || "contained"}
+      bgColor={bgColor}
+      color={color}
+      onClick={onClick}
+      {...props}
+    >
+      {value}
+    </StyledButton>
+  );
 };
 
 export default PrimaryButton;
